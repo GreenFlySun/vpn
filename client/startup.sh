@@ -2,10 +2,6 @@
 
 set -x
 
-apt update
-apt-get install -y software-properties-common
-add-apt-repository ppa:wireguard/wireguard
-apt install wireguard
 
 #mkdir /etc/wireguard
 #touch /etc/wireguard/server_public.key
