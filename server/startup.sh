@@ -11,8 +11,7 @@ apt install wireguard
 #touch /etc/wireguard/server_public.key
 #echo "test_numbers" >> /etc/wireguard/server_public.key 
 
-PUBKEY=$( < /etc/wireguard/server_public.key )
-PRIKEY=$( < /etc/wireguard/server_private.key )
+
 SYSCTL="/etc/sysctl.conf"
 
 if [  $(grep -c "net.ipv4.ip_forward = 1" $SYSCTL) -eq 0 ]
@@ -39,6 +38,9 @@ fi
 sysctl -p
 
 wg genkey | tee /etc/wireguard/server_private.key | wg pubkey |  tee /etc/wireguard/server_public.key
+
+PUBKEY=$( < /etc/wireguard/server_public.key )
+PRIKEY=$( < /etc/wireguard/server_private.key )
 
 touch /etc/wireguard/wg0.conf
 
