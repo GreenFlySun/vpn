@@ -53,3 +53,14 @@ sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/client.conf
 
 #ufw allow 63665/udp
 #wg-quick up wg0
+
+finish () {
+    echo "$(date): Shutting down Wireguard"
+    wg-quick down $interface
+    exit 0
+}
+
+trap finish SIGTERM SIGINT SIGQUIT
+
+sleep infinity &
+wait $!

@@ -56,3 +56,14 @@ sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/wg0.conf
 systemctl start wg-quick@wg0
 systemctl enable wg-quick@wg0
 #ufw allow 63665/udp
+
+finish () {
+    echo "$(date): Shutting down Wireguard"
+    wg-quick down $interface
+    exit 0
+}
+
+trap finish SIGTERM SIGINT SIGQUIT
+
+sleep infinity &
+wait $!
