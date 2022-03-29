@@ -59,4 +59,4 @@ sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/wg0.conf
 
 systemctl start wg-quick@wg0
 systemctl enable wg-quick@wg0
-ufw allow 63665/udp
+#ufw allow 63665/udp

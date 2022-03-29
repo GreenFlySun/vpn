@@ -55,5 +55,5 @@ AllowedIPs = 0.0.0.0/0,::/0" > /etc/wireguard/client.conf
 sed -i 's/^PublicKey =.*/PublicKey = '${PUBKEY}'/g' /etc/wireguard/client.conf
 sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/client.conf
 
-ufw allow 63665/udp
-wg-quick up wg0
+#ufw allow 63665/udp
+#wg-quick up wg0
