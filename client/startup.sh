@@ -2,7 +2,6 @@
 
 set -x
 
-
 #mkdir /etc/wireguard
 #touch /etc/wireguard/server_public.key
 #echo "test_numbers" >> /etc/wireguard/server_public.key 
@@ -40,26 +39,26 @@ PRIKEY=$( < /etc/wireguard/server_private.key )
 touch /etc/wireguard/client.conf
 
 echo -e "[Interface]
-PrivateKey = \n
+PrivateKey = ${PRIKEY} \n
 Address = 10.66.66.2/24,fd42:42:42::2/64 \n
 DNS = 8.8.8.8,8.8.4.4 \n
 [Peer] \n 
-PublicKey = \n
+PublicKey = ${PUBKEY} \n
 Endpoint = 192.168.1.1:63665 \n
 AllowedIPs = 0.0.0.0/0,::/0" > /etc/wireguard/client.conf
 
-sed -i 's/^PublicKey =.*/PublicKey = '${PUBKEY}'/g' /etc/wireguard/client.conf
-sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/client.conf
+#sed -i 's/^PublicKey =.*/PublicKey = '${PUBKEY}'/g' /etc/wireguard/client.conf
+#sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/client.conf
 
 #ufw allow 63665/udp
 #wg-quick up wg0
-interfaces=find /etc/wireguard -type f
+interfaces=$(find /etc/wireguard -type f -name '*.conf')
 if [[ -z $interfaces ]]; then
     echo "$(date): Interface not found in /etc/wireguard" >&2
     exit 1
 fi
 
-interface=echo $interfaces | head -n 1
+interface=$(echo $interfaces | head -n 1 | basename - .conf)
 
 echo "$(date): Starting Wireguard"
 wg-quick up $interface

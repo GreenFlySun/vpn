@@ -14,9 +14,13 @@ services:
         networks:
             static-network:
                 ipv4_address: 192.168.2.1
+        volumes:
+          - /lib/modules:/lib/modules
         
     server:
         image: server:latest
         networks:
             static-network:
                 ipv4_address: 192.168.1.1
+        volumes:
+          - /lib/modules:/lib/modules

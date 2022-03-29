@@ -43,29 +43,29 @@ touch /etc/wireguard/wg0.conf
 echo -e "[Interface] \n
 Address = 10.66.66.1/24,fd42:42:42::1/64 \n
 ListenPort = 63665 \n
-PrivateKey =  \n
+PrivateKey = ${PRIKEY} \n
 PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE; ip6tables -A FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE \n
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o enp0s8 -j MASQUERADE; ip6tables -D FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -D POSTROUTING -o enp0s8 -j MASQUERADE \n
 [Peer] \n
-PublicKey = \n 
+PublicKey = ${PUBKEY} \n 
 AllowedIPs = 10.66.66.2/32,fd42:42:42::2/128" > /etc/wireguard/wg0.conf
 
-sed -i 's/^PublicKey =.*/PublicKey = '${PUBKEY}'/g' /etc/wireguard/wg0.conf
-sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/wg0.conf
+#sed -i 's/^PublicKey =.*/PublicKey = '${PUBKEY}'/g' /etc/wireguard/wg0.conf
+#sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/wg0.conf
 
-systemctl start wg-quick@wg0
-systemctl enable wg-quick@wg0
+#systemctl start wg-quick@wg0
+#systemctl enable wg-quick@wg0
 #ufw allow 63665/udp
-interfaces=find /etc/wireguard -type f
+interfaces=$(find /etc/wireguard -type f -name '*.conf')
 if [[ -z $interfaces ]]; then
     echo "$(date): Interface not found in /etc/wireguard" >&2
     exit 1
 fi
 
-interface=echo $interfaces | head -n 1
+interface=$( basename  $(echo $interfaces | head -n 1 ) .conf)
 
 echo "$(date): Starting Wireguard"
-wg-quick up $interface
+wg-quick up $interface 
 finish () {
     echo "$(date): Shutting down Wireguard"
     wg-quick down $interface
