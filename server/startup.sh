@@ -56,7 +56,16 @@ sed -i 's/^PrivateKey =.*/PrivateKey = '${PRIKEY}'/g' /etc/wireguard/wg0.conf
 systemctl start wg-quick@wg0
 systemctl enable wg-quick@wg0
 #ufw allow 63665/udp
+interfaces=find /etc/wireguard -type f
+if [[ -z $interfaces ]]; then
+    echo "$(date): Interface not found in /etc/wireguard" >&2
+    exit 1
+fi
 
+interface=echo $interfaces | head -n 1
+
+echo "$(date): Starting Wireguard"
+wg-quick up $interface
 finish () {
     echo "$(date): Shutting down Wireguard"
     wg-quick down $interface
